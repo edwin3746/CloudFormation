@@ -97,6 +97,6 @@ Resources:
             apt install -y docker.io
             snap install docker
       Tags:
-      - Key: 'HiveCF'
-        Value: 'HiveCFInstance'
+      - Key: 'CortexCF'
+        Value: 'CortexCFInstance'
             
