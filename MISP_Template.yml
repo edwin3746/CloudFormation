@@ -100,9 +100,13 @@ Resources:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
 
-            
   ElasticIP:
     Type: AWS::EC2::EIP
     Properties:
       Domain: vpc
-      InstanceId: !Ref EC2Example 
+      
+  AssociateControlPort:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: !GetAtt ElasticIP.AllocationId
+      InstanceId: !Ref EC2Example
