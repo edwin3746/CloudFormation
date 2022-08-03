@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'VPC with private subnets in two availability zones'
+Parameters:
+  PrivateSubnet:
+    Description: Private Subnet to Attach NAT Gateway.
+    Type: AWS::EC2::Subnet::Id
+    Default: 'subnet-08afb76ea37f066b5'
+
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: c5.xlarge
+    AllowedValues: [t2.micro, c5.xlarge]
+    ConstraintDescription: Please choose a valid instance type.
+
+  SSHKeyName:
+    Description: EC2 instance type 
+    Type: String
+    Default: 'CloudFormation'
+    ConstraintDescription: Please choose a valid KeyName
+
+  VolumeSize:
+    Description: size of volume
+    Type: Number
+    Default: 10
+    ConstraintDescription: Please choose a valid Number
+    AllowedValues: [10, 15, 20, 30, 40, 50]
+
+  IOPS:
+    Description: total ipos
+    Type: Number
+    Default: 100
+    ConstraintDescription: Please choose a valid Number
+    AllowedValues: [100, 200, 500, 1000]
+
+  ImageId:
+    Type: String
+    Description: 'value for region singapore. If you using other version please choose right'
+    Default: 'ami-04ff9e9b51c1f62ca'
+    
+  SecurityGroupIds:
+    Description: launch-wizard3
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: 'sg-07ea85405a716eee4'
+
+        
+
+
+Resources:
+  EC2Example:
+    Type: "AWS::EC2::Instance"
+    Metadata:
+      AWS::CloudFormation::Init:
+        services:
+          sysvint:
+            codedeploy-agent:
+              enabled: 'true'
+              ensureRunning: 'true'
+    Properties:
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeyName
+      IamInstanceProfile: "EC2CodeDeploy"
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet: 
+            - Ref: "SecurityGroupIds"
+          SubnetId: 
+            Ref: "PrivateSubnet"
+      BlockDeviceMappings:
+        -
+          DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: io1
+            Iops: !Ref IOPS
+            DeleteOnTermination: false
+            VolumeSize: !Ref VolumeSize
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
+            apt install net-tools        
+            apt-get -y update
+            apt install -y ruby-full
+            apt-get-y install wget
+            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+            chmod +x ./install
+            ./install auto
+            apt-get install -y python-pip
+            pip install awscli
+            apt-get remove docker docker-engine docker.io
+            apt-get update
+            apt install -y docker.io
+            snap install docker
+            !Ref 'WaitHandle'
+      Tags:
+      - Key: 'HiveCF'
+        Value: 'HiveCFInstance'
+        
+  WaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref 'WaitHandle'
+      Timeout: '500'
+            
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref EC2Example 
