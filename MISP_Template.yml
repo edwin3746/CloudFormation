@@ -22,7 +22,7 @@ Parameters:
   VolumeSize:
     Description: size of volume
     Type: Number
-    Default: 15
+    Default: 10
     ConstraintDescription: Please choose a valid Number
     AllowedValues: [10, 15, 20, 30, 40, 50]
 
@@ -76,9 +76,27 @@ Resources:
             Iops: !Ref IOPS
             DeleteOnTermination: false
             VolumeSize: !Ref VolumeSize
-
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
+            apt install net-tools        
+            apt-get -y update
+            apt install -y ruby-full
+            apt-get-y install wget
+            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+            chmod +x ./install
+            ./install auto
+            apt-get install -y python-pip
+            pip install awscli
+            apt-get remove docker docker-engine docker.io
+            apt-get update
+            apt install -y docker.io
+            snap install docker
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
-
 
