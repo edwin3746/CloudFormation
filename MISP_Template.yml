@@ -22,7 +22,7 @@ Parameters:
   VolumeSize:
     Description: size of volume
     Type: Number
-    Default: 10
+    Default: 105
     ConstraintDescription: Please choose a valid Number
     AllowedValues: [10, 15, 20, 30, 40, 50]
 
@@ -80,10 +80,7 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash
-            cd /home/ubuntu
-            sudo rm -rf /var/lib/cloud/instance
-            sudo rm -rf /var/lib/cloud/instances
-            apt install net-tools        
+            cd /home/ubuntu  
             apt-get -y update
             apt install -y ruby-full
             apt-get-y install wget
