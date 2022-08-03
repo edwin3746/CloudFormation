@@ -98,8 +98,8 @@ Resources:
             snap install docker
             !Ref 'WaitHandle'
       Tags:
-      - Key: 'HiveCF'
-        Value: 'HiveCFInstance'
+      - Key: 'MISPCF'
+        Value: 'MISPCFInstance'
         
   WaitHandle:
     Type: AWS::CloudFormation::WaitConditionHandle
