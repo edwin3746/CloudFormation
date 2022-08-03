@@ -1,63 +1,108 @@
-version: '3'
-services:
-  misp:
-    image: coolacid/misp-docker:core-latest
-    restart: unless-stopped
-    depends_on: 
-      - misp_mysql
-    ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
-    volumes:
-      - "./server-configs/:/var/www/MISP/app/Config/"
-      - "./logs/:/var/www/MISP/app/tmp/logs/"
-      - "./files/:/var/www/MISP/app/files"
-      - "./ssl/:/etc/nginx/certs"
-    environment:
-      - MYSQL_HOST=misp_mysql
-      - MYSQL_DATABASE=mispdb
-      - MYSQL_USER=mispuser
-      - MYSQL_PASSWORD=misppass
-      - MISP_ADMIN_EMAIL=mispadmin@lab.local
-      - MISP_ADMIN_PASSPHRASE=mispadminpass
-      - MISP_BASEURL=localhost
-      - TIMEZONE=Europe/London
-      - "INIT=true"         
-      - "CRON_USER_ID=1"   
-      - "REDIS_FQDN=redis"
-      - "HOSTNAME=https://10.200.200.253"
-    networks:
-      - SOC_NET
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'VPC with private subnets in two availability zones'
+Parameters:
+  PrivateSubnet:
+    Description: Private Subnet to Attach NAT Gateway.
+    Type: AWS::EC2::Subnet::Id
+    Default: 'subnet-08afb76ea37f066b5'
 
-  misp_mysql:
-    image: mysql/mysql-server:5.7
-    restart: unless-stopped
-    volumes:
-      - mispsqldata:/var/lib/mysql   
-    environment:
-      - MYSQL_DATABASE=mispdb
-      - MYSQL_USER=mispuser
-      - MYSQL_PASSWORD=misppass
-      - MYSQL_ROOT_PASSWORD=mispass
-    networks:
-      - SOC_NET
-  redis:
-    image: redis:5.0.6
-    networks:
-      - SOC_NET
-  misp-modules:
-    image: coolacid/misp-docker:modules-latest
-    environment:
-      - "REDIS_BACKEND=redis"
-    depends_on:
-      - redis
-      - misp_mysql
-    networks:
-      - SOC_NET   
+  InstanceType:
+    Description: EC2 instance type
+    Type: String
+    Default: c5.xlarge
+    AllowedValues: [t2.micro, c5.xlarge]
+    ConstraintDescription: Please choose a valid instance type.
 
-volumes:
-  mispsqldata:
+  SSHKeyName:
+    Description: EC2 instance type 
+    Type: String
+    Default: 'CloudFormation'
+    ConstraintDescription: Please choose a valid KeyName
 
-networks:
-    SOC_NET:
-          driver: bridge
+  VolumeSize:
+    Description: size of volume
+    Type: Number
+    Default: 10
+    ConstraintDescription: Please choose a valid Number
+    AllowedValues: [10, 15, 20, 30, 40, 50]
+
+  IOPS:
+    Description: total ipos
+    Type: Number
+    Default: 100
+    ConstraintDescription: Please choose a valid Number
+    AllowedValues: [100, 200, 500, 1000]
+
+  ImageId:
+    Type: String
+    Description: 'value for region singapore. If you using other version please choose right'
+    Default: 'ami-04ff9e9b51c1f62ca'
+    
+  SecurityGroupIds:
+    Description: launch-wizard3
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: 'sg-07ea85405a716eee4'
+
+        
+
+
+Resources:
+  EC2Example:
+    Type: "AWS::EC2::Instance"
+    Metadata:
+      AWS::CloudFormation::Init:
+        services:
+          sysvint:
+            codedeploy-agent:
+              enabled: 'true'
+              ensureRunning: 'true'
+    Properties:
+      ImageId: !Ref ImageId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref SSHKeyName
+      IamInstanceProfile: "EC2CodeDeploy"
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: "true"
+          DeviceIndex: "0"
+          GroupSet: 
+            - Ref: "SecurityGroupIds"
+          SubnetId: 
+            Ref: "PrivateSubnet"
+      BlockDeviceMappings:
+        -
+          DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: io1
+            Iops: !Ref IOPS
+            DeleteOnTermination: false
+            VolumeSize: !Ref VolumeSize
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
+            apt install net-tools        
+            apt-get -y update
+            apt install -y ruby-full
+            apt-get-y install wget
+            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+            chmod +x ./install
+            ./install auto
+            apt-get install -y python-pip
+            pip install awscli
+            apt-get remove docker docker-engine docker.io
+            apt-get update
+            apt install -y docker.io
+            snap install docker
+      Tags:
+      - Key: 'MISPCF'
+        Value: 'MISPCFInstance'
+
+            
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+      InstanceId: !Ref EC2Example 
