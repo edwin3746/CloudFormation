@@ -22,7 +22,7 @@ Parameters:
   VolumeSize:
     Description: size of volume
     Type: Number
-    Default: 105
+    Default: 15
     ConstraintDescription: Please choose a valid Number
     AllowedValues: [10, 15, 20, 30, 40, 50]
 
