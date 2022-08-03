@@ -80,7 +80,9 @@ Resources:
         Fn::Base64:
           !Sub |
             #!/bin/bash
-            cd /home/ubuntu  
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
             apt-get -y update
             apt install -y ruby-full
             apt-get-y install wget
