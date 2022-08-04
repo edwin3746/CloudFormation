@@ -44,6 +44,8 @@ Parameters:
     Default: 'sg-07ea85405a716eee4'
 
         
+
+
 Resources:
   EC2Example:
     Type: "AWS::EC2::Instance"
@@ -73,40 +75,28 @@ Resources:
             VolumeType: io1
             Iops: !Ref IOPS
             DeleteOnTermination: false
-            VolumeSize: !Ref VolumeSize            
-      UserData: !Base64
-        Fn::Join:
-          - ''
-          - - "#!/bin/bash -ex\n"
-            - "cd /home/ubuntu\n"
-            - "sudo rm -rf /var/lib/cloud/instance\n"
-            - "sudo rm -rf /var/lib/cloud/instances\n"
-            - "apt install net-tools\n"     
-            - "apt-get -y update\n"
-            - "apt install -y ruby-full\n"
-            - "apt-get-y install wget\n"
-            - "wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install\n"
-            - "chmod +x ./install\n"
-            - "./install auto\n"
-            - "apt-get install -y python-pip\n"
-            - "pip install awscli\n"
-            - "apt-get remove docker docker-engine docker.io\n"
-            - "apt-get update\n"
-            - "apt install -y docker.io\n"
-            - "snap install docker\n"
-          
-
-            
+            VolumeSize: !Ref VolumeSize
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
+            apt install net-tools        
+            apt-get -y update
+            apt install -y ruby-full
+            apt-get-y install wget
+            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+            chmod +x ./install
+            ./install auto
+            apt-get install -y python-pip
+            pip install awscli
+            apt-get remove docker docker-engine docker.io
+            apt-get update
+            apt install -y docker.io
+            snap install docker
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
-          
-  WaitHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-  WaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    DependsOn: EC2Example
-    Properties:
-      Handle: !Ref 'WaitHandle'
-      Timeout: '120'
-      Count: '0'
+        
