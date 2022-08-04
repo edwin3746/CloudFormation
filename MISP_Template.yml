@@ -44,8 +44,6 @@ Parameters:
     Default: 'sg-07ea85405a716eee4'
 
         
-
-
 Resources:
   EC2Example:
     Type: "AWS::EC2::Instance"
@@ -56,6 +54,9 @@ Resources:
             codedeploy-agent:
               enabled: 'true'
               ensureRunning: 'true'
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT4M
     Properties:
       ImageId: !Ref ImageId
       InstanceType: !Ref InstanceType
@@ -96,16 +97,9 @@ Resources:
             apt-get update
             apt install -y docker.io
             snap install docker
-            !Ref 'WaitHandle'
+            /opt/aws/bin/cfn-signal --exit-code 0 --resource EC2Example --region ${AWS::ap-southeast-1} --stack ${AWS::MISPInstance}
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
         
-  WaitHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-  WaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    Properties:
-      Handle: !Ref 'WaitHandle'
-      Timeout: '200'
-      Count: '1'
+
