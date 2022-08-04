@@ -92,7 +92,7 @@ Resources:
             - "apt-get -y update\n"
             - "apt install -y ruby-full\n"
             - "{\n"
-            - 'sudo /usr/local/bin/cfn-signal --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1} -e 1 -r "$1" '''
+            - 'sudo /usr/local/bin/cfn-signal --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1} -e 0 -r "$1" '''
             - !Ref 'WaitHandle'
             - "'\n"
             - "  exit 1\n"
