@@ -56,7 +56,7 @@ Resources:
               ensureRunning: 'true'
     CreationPolicy:
       ResourceSignal:
-        Timeout: PT4M
+        Timeout: PT10M
     Properties:
       ImageId: !Ref ImageId
       InstanceType: !Ref InstanceType
@@ -98,24 +98,17 @@ Resources:
             - "wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install\n"
             - "chmod +x ./install\n"
             - "./install auto\n"
-            - /opt/aws/bin/cfn-signal -e 0
             - "apt-get install -y python-pip\n"
             - "pip install awscli\n"
             - "apt-get remove docker docker-engine docker.io\n"
             - "apt-get update\n"
             - "apt install -y docker.io\n"
             - "snap install docker\n"
-            - '/opt/aws/bin/cfn-init -s '
-            - !Ref 'AWS::arn:aws:cloudformation:ap-southeast-1:438154232479:stack/MISPInstance/be163a20-13a6-11ed-81e3-028749e28e16'
-            - ' -r WebAppInstance --region '
-            - !Ref 'AWS::ap-southeast-1'
-            - " || error_exit 'Failed to run cfn-init.'\n"
             - "# All is well, so signal success.\n"
             - /opt/aws/bin/cfn-signal -e 0 -r "AWS CodeDeploy Agent setup complete."
               '
             - !Ref 'WaitHandle'
             - "'\n"
-
             
       Tags:
       - Key: 'MISPCF'
