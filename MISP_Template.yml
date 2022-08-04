@@ -54,9 +54,6 @@ Resources:
             codedeploy-agent:
               enabled: 'true'
               ensureRunning: 'true'
-    CreationPolicy:
-      ResourceSignal:
-        Timeout: PT10M
     Properties:
       ImageId: !Ref ImageId
       InstanceType: !Ref InstanceType
