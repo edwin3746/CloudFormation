@@ -112,4 +112,4 @@ Resources:
     Properties:
       Handle: !Ref 'WaitHandle'
       Timeout: '120'
-      Count: '1'
+      Count: '0'
