@@ -81,6 +81,7 @@ Resources:
         "Fn::Base64":
           !Sub |
             #!/bin/bash -xe
+            yum update -y aws-cfn-bootstrap
             cd /home/ubuntu
             sudo rm -rf /var/lib/cloud/instance
             sudo rm -rf /var/lib/cloud/instances
