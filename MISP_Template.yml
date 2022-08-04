@@ -107,7 +107,7 @@ Resources:
             - "apt-get update\n"
             - "apt install -y docker.io\n"
             - "snap install docker\n"
-            - "sudo /usr/local/bin/cfn-init --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}\n"
+            - "sudo /usr/local/bin/cfn-signal --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}\n"
 
             
       Tags:
