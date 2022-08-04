@@ -98,7 +98,7 @@ Resources:
             - "wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install\n"
             - "chmod +x ./install\n"
             - "./install auto\n"
-            = /opt/aws/bin/cfn-signal -e 0
+            - /opt/aws/bin/cfn-signal -e 0
             - "apt-get install -y python-pip\n"
             - "pip install awscli\n"
             - "apt-get remove docker docker-engine docker.io\n"
