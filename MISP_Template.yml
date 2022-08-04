@@ -77,29 +77,45 @@ Resources:
             Iops: !Ref IOPS
             DeleteOnTermination: false
             VolumeSize: !Ref VolumeSize            
-      UserData:
-        "Fn::Base64":
-          !Sub |
-            #!/bin/bash -xe
-            yum update -y aws-cfn-bootstrap
-            cd /home/ubuntu
-            sudo rm -rf /var/lib/cloud/instance
-            sudo rm -rf /var/lib/cloud/instances
-            apt install net-tools        
-            apt-get -y update
-            apt install -y ruby-full
-            apt-get-y install wget
-            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
-            chmod +x ./install
-            ./install auto
-            apt-get install -y python-pip
-            pip install awscli
-            apt-get remove docker docker-engine docker.io
-            apt-get update
-            apt install -y docker.io
-            snap install docker
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}
+      UserData: !Base64
+        Fn::Join:
+          - ''
+          - - "#!/bin/bash -ex\n"
+            - "apt-get -y aws-cfn-bootstrap\n"
+            - "cd /home/ubuntu\n"
+            - "sudo rm -rf /var/lib/cloud/instance\n"
+            - "sudo rm -rf /var/lib/cloud/instances\n"
+            - "apt install net-tools\n"     
+            - "apt-get -y update\n"
+            - "apt install -y ruby-full\n"
+            - "{\n"
+            - '  /opt/aws/bin/cfn-signal -e 1 -r "$1" '''
+            - !Ref 'WaitHandle'
+            - "'\n"
+            - "  exit 1\n"
+            - "}\n"
+            - "apt-get-y install wget\n"
+            - "wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install\n"
+            - "chmod +x ./install\n"
+            - "./install auto\n"
+            - "apt-get install -y python-pip\n"
+            - "pip install awscli\n"
+            - "apt-get remove docker docker-engine docker.io\n"
+            - "apt-get update\n"
+            - "apt install -y docker.io\n"
+            - "snap install docker\n"
+            - !Ref 'WaitHandle'
+            - "'\n"
+            
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
+          
+  WaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref 'WaitHandle'
+      Timeout: '300'
         
