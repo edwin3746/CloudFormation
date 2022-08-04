@@ -81,22 +81,12 @@ Resources:
         Fn::Join:
           - ''
           - - "#!/bin/bash -ex\n"
-            - "sudo apt-get -y install python-setuptools"
-            - "mkdir aws-cfn-bootstrap-latest\n"
-            - "curl https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz | tar xz -C aws-cfn-bootstrap-latest --strip-components 1"
-            - "sudo easy_install aws-cfn-bootstrap-latest"
             - "cd /home/ubuntu\n"
             - "sudo rm -rf /var/lib/cloud/instance\n"
             - "sudo rm -rf /var/lib/cloud/instances\n"
             - "apt install net-tools\n"     
             - "apt-get -y update\n"
             - "apt install -y ruby-full\n"
-            - "{\n"
-            - 'sudo /usr/local/bin/cfn-signal --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1} -e 0 -r "$1" '''
-            - !Ref 'WaitHandle'
-            - "'\n"
-            - "  exit 1\n"
-            - "}\n"
             - "apt-get-y install wget\n"
             - "wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install\n"
             - "chmod +x ./install\n"
@@ -107,7 +97,8 @@ Resources:
             - "apt-get update\n"
             - "apt install -y docker.io\n"
             - "snap install docker\n"
-         
+          
+
             
       Tags:
       - Key: 'MISPCF'
@@ -117,8 +108,8 @@ Resources:
     Type: AWS::CloudFormation::WaitConditionHandle
   WaitCondition:
     Type: AWS::CloudFormation::WaitCondition
+    DependsOn: UserData
     Properties:
       Handle: !Ref 'WaitHandle'
-      Timeout: '121'
+      Timeout: '120'
       Count: '1'
-        
