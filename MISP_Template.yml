@@ -77,9 +77,8 @@ Resources:
             Iops: !Ref IOPS
             DeleteOnTermination: false
             VolumeSize: !Ref VolumeSize
-      UserData: 
-        Fn::Base64:
-          !Sub |
+      UserData: !Base64
+        'Fn::Sub': |
             #!/bin/bash
             cd /home/ubuntu
             sudo rm -rf /var/lib/cloud/instance
@@ -103,4 +102,3 @@ Resources:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
         
-
