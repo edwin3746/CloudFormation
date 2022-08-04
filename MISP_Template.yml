@@ -105,6 +105,7 @@ Resources:
             - "apt-get update\n"
             - "apt install -y docker.io\n"
             - "snap install docker\n"
+            - /opt/aws/bin/cfn-signal -e 0 -r "UserData setup complete."
               '
             - !Ref 'WaitHandle'
             - "'\n"
