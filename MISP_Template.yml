@@ -43,6 +43,7 @@ Parameters:
     Type: AWS::EC2::SecurityGroup::Id
     Default: 'sg-07ea85405a716eee4'
 
+        
 Resources:
   EC2Example:
     Type: "AWS::EC2::Instance"
@@ -72,8 +73,23 @@ Resources:
             VolumeType: io1
             Iops: !Ref IOPS
             DeleteOnTermination: false
-            VolumeSize: !Ref VolumeSize
+            VolumeSize: !Ref VolumeSize            
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash
+            cd /home/ubuntu
+            sudo rm -rf /var/lib/cloud/instance
+            sudo rm -rf /var/lib/cloud/instances
+            sudo apt install -y ruby-full
+            sudo apt-get-y install wget
+            sudo wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+            sudo chmod +x ./install
+            sudo ./install auto
+            sudo apt-get install -y python-pip
+            sudo pip install awscli
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
-        
+          
+
