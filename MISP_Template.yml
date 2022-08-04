@@ -76,8 +76,7 @@ Resources:
             VolumeType: io1
             Iops: !Ref IOPS
             DeleteOnTermination: false
-            VolumeSize: !Ref VolumeSize
-            
+            VolumeSize: !Ref VolumeSize            
        UserData:
          "Fn::Base64":
            !Sub |
