@@ -86,6 +86,7 @@ Resources:
             apt install net-tools        
             apt-get -y update
             apt install -y ruby-full
+            !Ref 'WaitHandle'
             apt-get-y install wget
             wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
             chmod +x ./install
@@ -99,4 +100,11 @@ Resources:
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
-
+        
+  WaitHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref 'WaitHandle'
+      Timeout: '300'
