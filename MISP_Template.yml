@@ -119,5 +119,6 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref 'WaitHandle'
-      Timeout: '300'
+      Timeout: '121'
+      Count: '1'
         
