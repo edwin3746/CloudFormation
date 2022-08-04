@@ -86,7 +86,6 @@ Resources:
             apt install net-tools        
             apt-get -y update
             apt install -y ruby-full
-            !Ref 'WaitHandle'
             apt-get-y install wget
             wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
             chmod +x ./install
@@ -97,6 +96,7 @@ Resources:
             apt-get update
             apt install -y docker.io
             snap install docker
+            !Ref 'WaitHandle'
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
@@ -107,4 +107,5 @@ Resources:
     Type: AWS::CloudFormation::WaitCondition
     Properties:
       Handle: !Ref 'WaitHandle'
-      Timeout: '300'
+      Timeout: '200'
+      Count: '1'
