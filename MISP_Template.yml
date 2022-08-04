@@ -105,7 +105,8 @@ Resources:
             - "apt-get update\n"
             - "apt install -y docker.io\n"
             - "snap install docker\n"
-            - '!Ref 'WaitHandle'
+              '
+            - !Ref 'WaitHandle'
             - "'\n"
             
       Tags:
