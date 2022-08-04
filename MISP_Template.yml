@@ -78,7 +78,7 @@ Resources:
             DeleteOnTermination: false
             VolumeSize: !Ref VolumeSize
       UserData: 
-        'Fn::Base64':
+        Fn::Base64:
           !Sub |
             #!/bin/bash
             cd /home/ubuntu
@@ -97,8 +97,8 @@ Resources:
             apt-get update
             apt install -y docker.io
             snap install docker
-            #!/bin/bash
-            /opt/aws/bin/cfn-signal --exit-code 0 --resource EC2Example --region ${AWS::ap-southeast-1} --stack ${AWS::MISPInstance}
+            pip install https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
+            /usr/local/bin/cfn-signal -e $? --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
