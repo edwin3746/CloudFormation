@@ -79,6 +79,7 @@ Resources:
             VolumeSize: !Ref VolumeSize
       UserData: !Base64
         'Fn::Sub': |
+            #cloud-boothook
             #!/bin/bash
             cd /home/ubuntu
             sudo rm -rf /var/lib/cloud/instance
