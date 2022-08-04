@@ -79,26 +79,26 @@ Resources:
             VolumeSize: !Ref VolumeSize
             
        UserData:
-        "Fn::Base64":
-          !Sub |
-            #!/bin/bash -xe
-            cd /home/ubuntu
-            sudo rm -rf /var/lib/cloud/instance
-            sudo rm -rf /var/lib/cloud/instances
-            apt install net-tools        
-            apt-get -y update
-            apt install -y ruby-full
-            apt-get-y install wget
-            wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
-            chmod +x ./install
-            ./install auto
-            apt-get install -y python-pip
-            pip install awscli
-            apt-get remove docker docker-engine docker.io
-            apt-get update
-            apt install -y docker.io
-            snap install docker
-            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}
+         "Fn::Base64":
+           !Sub |
+             #!/bin/bash -xe
+             cd /home/ubuntu
+             sudo rm -rf /var/lib/cloud/instance
+             sudo rm -rf /var/lib/cloud/instances
+             apt install net-tools        
+             apt-get -y update
+             apt install -y ruby-full
+             apt-get-y install wget
+             wget https://aws-codedeploy-ap-southeast-1.s3.ap-southeast-1.amazonaws.com/latest/install
+             chmod +x ./install
+             ./install auto
+             apt-get install -y python-pip
+             pip install awscli
+             apt-get remove docker docker-engine docker.io
+             apt-get update
+             apt install -y docker.io
+             snap install docker
+             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::MISPInstance} --resource EC2Example --region ${AWS::ap-southeast-1}
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
