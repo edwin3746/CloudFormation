@@ -80,14 +80,15 @@ Resources:
     Type: AWS::EC2::Volume
     Properties:
     AvailabilityZone: !Ref AvailabilityZone
+    SnapshotId: 'vol-0686677f4adf507cf'
     Tags:
       - Key: MISPVol
         Value: MISPVol
   DeletionPolicy: Snapshot
 
-MountPoint:
-  Type: AWS::EC2::VolumeAttachment
-  Properties:
+  MountPoint:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
     InstanceId: !Ref EC2Example
     VolumeId: !Ref NewVolume
     Device: /dev/sda1
