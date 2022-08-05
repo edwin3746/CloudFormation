@@ -22,7 +22,7 @@ Parameters:
   ImageId:
     Type: String
     Description: 'value for region singapore. If you using other version please choose right'
-    Default: 'ami-04ff9e9b51c1f62ca'
+    Default: 'ami-07d25eb72a36c32fb'
     
   SecurityGroupIds:
     Description: launch-wizard3
@@ -60,19 +60,3 @@ Resources:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
           
-
-  NewVolume:
-    Type: AWS::EC2::Volume
-    Properties:
-      AvailabilityZone: !Ref AvailabilityZone
-      SnapshotId: 'snap-0b2e20d02a5fabbb6'
-      Tags:
-        - Key: MISPVol
-          Value: MISPVol
-
-  MountPoint:
-    Type: AWS::EC2::VolumeAttachment
-    Properties:
-      InstanceId: !Ref EC2Example
-      VolumeId: !Ref NewVolume
-      Device: /dev/sda1
