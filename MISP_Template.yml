@@ -43,7 +43,12 @@ Parameters:
     Type: AWS::EC2::SecurityGroup::Id
     Default: 'sg-07ea85405a716eee4'
     
-  
+  AvailabilityZone:
+    Description: 1b 
+    Type: AWS::EC2::AvailabilityZone::Name
+    Default: 'ap-southeast-1b'
+
+        
 Resources:
   EC2Example:
     Type: "AWS::EC2::Instance"
@@ -65,27 +70,24 @@ Resources:
           GroupSet: 
             - Ref: "SecurityGroupIds"
           SubnetId: 
-            Ref: "PrivateSubnet"
+            Ref: "PrivateSubnet"       
       Tags:
-        - Key: 'MISPCF'
-          Value: 'MISPCFInstance'
-    
+      - Key: 'MISPCF'
+        Value: 'MISPCFInstance'
+          
+
   NewVolume:
     Type: AWS::EC2::Volume
     Properties:
-      Size: 10
-      AvailabilityZone: !GetAtt EC2Example.AvailabilityZone
-      Default: 'vol-0686677f4adf507cf'
-      Tags:
-        - Key: MyTag
-          Value: TagValue
-    DeletionPolicy: Snapshot
+    AvailabilityZone: !Ref AvailabilityZone
+    Tags:
+      - Key: MISPVol
+        Value: MISPVol
+  DeletionPolicy: Snapshot
 
-  MountPoint:
-    Type: AWS::EC2::VolumeAttachment
-    Properties:
-      InstanceId: !Ref EC2Example
-      VolumeId: !Ref NewVolume
-      Device: /dev/sda1
-      
-
+MountPoint:
+  Type: AWS::EC2::VolumeAttachment
+  Properties:
+    InstanceId: !Ref EC2Example
+    VolumeId: !Ref NewVolume
+    Device: /dev/sda1
