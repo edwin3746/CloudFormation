@@ -22,7 +22,7 @@ Parameters:
   ImageId:
     Type: String
     Description: 'value for region singapore. If you using other version please choose right'
-    Default: 'ami-0049ea52ecffeee70'
+    Default: 'ami-0870317655f5daccb'
     
   SecurityGroupIds:
     Description: launch-wizard3
@@ -59,4 +59,9 @@ Resources:
       Tags:
       - Key: 'MISPCF'
         Value: 'MISPCFInstance'
-          
+        
+  AssociateControlPort:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: 'eipalloc-0eec026687d4d361c'
+      InstanceId: !Ref EC2Example        
