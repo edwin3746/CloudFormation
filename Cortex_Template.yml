@@ -22,7 +22,7 @@ Parameters:
   ImageId:
     Type: String
     Description: 'value for region singapore. If you using other version please choose right'
-    Default: 'ami-0ce14318454e3fc24'
+    Default: 'ami-0736aa90f5af9ac34'
     
   SecurityGroupIds:
     Description: launch-wizard3
@@ -59,4 +59,9 @@ Resources:
       Tags:
       - Key: 'CortexCF'
         Value: 'CortexCFInstance'
-          
+
+  AssociateControlPort:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      AllocationId: 'eipalloc-0eec026687d4d361c'
+      InstanceId: !Ref EC2Example  
