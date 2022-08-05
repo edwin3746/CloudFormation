@@ -19,20 +19,6 @@ Parameters:
     Default: 'CloudFormation'
     ConstraintDescription: Please choose a valid KeyName
 
-  VolumeSize:
-    Description: size of volume
-    Type: Number
-    Default: 10
-    ConstraintDescription: Please choose a valid Number
-    AllowedValues: [10, 15, 20, 30, 40, 50]
-
-  IOPS:
-    Description: total ipos
-    Type: Number
-    Default: 100
-    ConstraintDescription: Please choose a valid Number
-    AllowedValues: [100, 200, 500, 1000]
-
   ImageId:
     Type: String
     Description: 'value for region singapore. If you using other version please choose right'
@@ -47,8 +33,7 @@ Parameters:
     Description: 1b 
     Type: AWS::EC2::AvailabilityZone::Name
     Default: 'ap-southeast-1b'
-
-        
+       
 Resources:
   EC2Example:
     Type: "AWS::EC2::Instance"
@@ -79,16 +64,15 @@ Resources:
   NewVolume:
     Type: AWS::EC2::Volume
     Properties:
-    AvailabilityZone: !Ref AvailabilityZone
-    SnapshotId: 'vol-0686677f4adf507cf'
-    Tags:
-      - Key: MISPVol
-        Value: MISPVol
-  DeletionPolicy: Snapshot
+      AvailabilityZone: !Ref AvailabilityZone
+      SnapshotId: 'snap-0b2e20d02a5fabbb6'
+      Tags:
+        - Key: MISPVol
+          Value: MISPVol
 
   MountPoint:
     Type: AWS::EC2::VolumeAttachment
     Properties:
-    InstanceId: !Ref EC2Example
-    VolumeId: !Ref NewVolume
-    Device: /dev/sda1
+      InstanceId: !Ref EC2Example
+      VolumeId: !Ref NewVolume
+      Device: /dev/sda1
