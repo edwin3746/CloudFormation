@@ -63,5 +63,5 @@ Resources:
   AssociateControlPort:
     Type: AWS::EC2::EIPAssociation
     Properties:
-      AllocationId: 'eipalloc-0eec026687d4d361c'
+      AllocationId: 'eipalloc-02568338acb682ac9'
       InstanceId: !Ref EC2Example  
