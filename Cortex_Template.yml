@@ -22,7 +22,7 @@ Parameters:
   ImageId:
     Type: String
     Description: 'value for region singapore. If you using other version please choose right'
-    Default: 'ami-0b157fd05ca2df5f3'
+    Default: 'ami-0ce14318454e3fc24'
     
   SecurityGroupIds:
     Description: launch-wizard3
